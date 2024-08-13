@@ -70,7 +70,4 @@ Contributions are welcome! Please fork the repository and submit a pull request 
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Contact
-
-For any questions or inquiries, please contact [Your Name](mailto:your.email@example.com).
 
