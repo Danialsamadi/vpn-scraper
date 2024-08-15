@@ -25,7 +25,7 @@ public class VPNConfigScraperFrame extends JFrame {
 
     private void setupFrame() {
         setTitle("VPN Config Scraper");
-        setSize(800, 600);  // Increased size for a bigger window
+        setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         createMenuBar();
@@ -36,6 +36,8 @@ public class VPNConfigScraperFrame extends JFrame {
 
         urlField = new JTextField("https://raw.githubusercontent.com/ALIILAPRO/v2rayNG-Config/main/server.txt");
         fetchButton = new JButton("Fetch and Show Configs (" + formatTime(countdownSeconds) + ")");
+        fetchButton.setPreferredSize(new Dimension(300, 40));
+        fetchButton.setMinimumSize(new Dimension(300, 40));  // Prevent shrinking below this size
 
         tabbedPane = new JTabbedPane();
         JPanel vmessPanel = createProtocolPanel("VMess");
@@ -53,16 +55,33 @@ public class VPNConfigScraperFrame extends JFrame {
             resetCountdown();
         });
 
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.add(fetchButton, BorderLayout.SOUTH);
-        mainPanel.add(tabbedPane, BorderLayout.CENTER);
+        // Use GridBagLayout for flexible layout management
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1.0;
+        gbc.weighty = 1.0;
+        gbc.fill = GridBagConstraints.BOTH;
+        mainPanel.add(tabbedPane, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.fill = GridBagConstraints.NONE;
+        gbc.anchor = GridBagConstraints.SOUTH;
+        mainPanel.add(fetchButton, gbc);
+
         add(mainPanel);
     }
 
     private JPanel createProtocolPanel(String protocol) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setName(protocol); // Set the name of the panel for reference
+        panel.setName(protocol);
+        panel.setPreferredSize(new Dimension(700, 500));
+        panel.setMinimumSize(new Dimension(700, 500));  // Prevent shrinking below this size
         return panel;
     }
 
@@ -89,20 +108,17 @@ public class VPNConfigScraperFrame extends JFrame {
 
     private void updateConfigPanels(List<String> vpnConfigs) {
         SwingUtilities.invokeLater(() -> {
-            // Clear previous content in all tabs
             for (int i = 0; i < tabbedPane.getTabCount(); i++) {
                 JScrollPane scrollPane = (JScrollPane) tabbedPane.getComponentAt(i);
                 JPanel panel = (JPanel) scrollPane.getViewport().getView();
                 panel.removeAll();
             }
 
-            // Initialize protocol index counters
-            int[] protocolIndices = new int[4]; // Array to keep track of indices for each protocol
+            int[] protocolIndices = new int[4];
             for (int i = 0; i < protocolIndices.length; i++) {
                 protocolIndices[i] = 1;
             }
 
-            // Add configs to respective panels based on protocol
             for (String config : vpnConfigs) {
                 JPanel panel = getProtocolPanel(config);
                 if (panel != null) {
@@ -112,13 +128,11 @@ public class VPNConfigScraperFrame extends JFrame {
                 }
             }
 
-            // Show no configurations message if a panel is empty
             updatePanelWithMessage((JPanel) ((JScrollPane) tabbedPane.getComponentAt(0)).getViewport().getView(), "No VMess configurations found.");
             updatePanelWithMessage((JPanel) ((JScrollPane) tabbedPane.getComponentAt(1)).getViewport().getView(), "No VLess configurations found.");
             updatePanelWithMessage((JPanel) ((JScrollPane) tabbedPane.getComponentAt(2)).getViewport().getView(), "No Trojan configurations found.");
             updatePanelWithMessage((JPanel) ((JScrollPane) tabbedPane.getComponentAt(3)).getViewport().getView(), "No Shadowsocks configurations found.");
 
-            // Refresh the panels
             for (int i = 0; i < tabbedPane.getTabCount(); i++) {
                 JScrollPane scrollPane = (JScrollPane) tabbedPane.getComponentAt(i);
                 JPanel panel = (JPanel) scrollPane.getViewport().getView();
@@ -135,13 +149,13 @@ public class VPNConfigScraperFrame extends JFrame {
     }
 
     private JPanel getProtocolPanel(String config) {
-        if (config.contains("vmess")) {
+        if (config.matches("(?i).*vmess://.*")) {
             return (JPanel) ((JScrollPane) tabbedPane.getComponentAt(0)).getViewport().getView();
-        } else if (config.contains("vless")) {
+        } else if (config.matches("(?i).*vless://.*")) {
             return (JPanel) ((JScrollPane) tabbedPane.getComponentAt(1)).getViewport().getView();
-        } else if (config.contains("trojan")) {
+        } else if (config.matches("(?i).*trojan://.*")) {
             return (JPanel) ((JScrollPane) tabbedPane.getComponentAt(2)).getViewport().getView();
-        } else if (config.contains("shadowsocks")) {
+        } else if (config.matches("(?i).*ss://.*")) {
             return (JPanel) ((JScrollPane) tabbedPane.getComponentAt(3)).getViewport().getView();
         }
         return null;
@@ -163,6 +177,8 @@ public class VPNConfigScraperFrame extends JFrame {
         configContainer.setLayout(new BorderLayout());
 
         JButton copyButton = new JButton("Copy");
+        copyButton.setPreferredSize(new Dimension(100, 30));
+        copyButton.setMinimumSize(new Dimension(100, 30));  // Prevent shrinking below this size
         JTextField configField = new JTextField(index + ". " + config);
         configField.setEditable(false);
 
@@ -205,7 +221,6 @@ public class VPNConfigScraperFrame extends JFrame {
     private void createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        // Configs Menu
         JMenu configsMenu = new JMenu("Configs");
         JMenuItem fetchConfigsItem = new JMenuItem("Fetch Now");
         fetchConfigsItem.addActionListener(e -> {
@@ -216,7 +231,6 @@ public class VPNConfigScraperFrame extends JFrame {
         });
         configsMenu.add(fetchConfigsItem);
 
-        // About Me Menu
         JMenu aboutMenu = new JMenu("About Me");
         JMenuItem aboutMeItem = new JMenuItem("About the Developer");
         aboutMeItem.addActionListener(e -> {
@@ -225,11 +239,9 @@ public class VPNConfigScraperFrame extends JFrame {
         });
         aboutMenu.add(aboutMeItem);
 
-        // Add menus to the menu bar
         menuBar.add(configsMenu);
         menuBar.add(aboutMenu);
 
-        // Set the menu bar to the frame
         setJMenuBar(menuBar);
     }
 }

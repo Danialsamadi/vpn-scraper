@@ -22,7 +22,7 @@ public class AboutMeDialog extends JDialog {
 
         // Create the label with the developer information
         JLabel infoLabel = new JLabel("<html><div style='text-align: center;'>"
-                + "Developer: Your Name<br/>"
+                + "Developer: Danial Samadi<br/>"
                 + "Version: 1.0<br/>"
                 + "This tool fetches VPN configurations."
                 + "</div></html>");
