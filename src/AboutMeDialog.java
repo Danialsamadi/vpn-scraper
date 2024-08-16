@@ -8,7 +8,7 @@ public class AboutMeDialog extends JDialog {
 
     public AboutMeDialog(JFrame parent) {
         super(parent, "About the Developer", true);
-        setSize(500, 300);
+        setSize(600, 500); // Increased height to accommodate the GIF
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
@@ -19,6 +19,14 @@ public class AboutMeDialog extends JDialog {
         gbc.gridy = GridBagConstraints.RELATIVE;
         gbc.insets = new Insets(10, 0, 10, 0);
         gbc.anchor = GridBagConstraints.CENTER;
+
+        // Add the GIF to the content panel
+        // Replace "path/to/your.gif" with the actual path to your GIF file
+        ImageIcon gifIcon = new ImageIcon("ghost.gif");
+        Image gifImage = gifIcon.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+        ImageIcon scaledGifIcon = new ImageIcon(gifImage);
+        JLabel gifLabel = new JLabel(scaledGifIcon);
+        contentPanel.add(gifLabel, gbc);
 
         // Create the label with the developer information
         JLabel infoLabel = new JLabel("<html><div style='text-align: center;'>"

@@ -3,6 +3,8 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -74,6 +76,19 @@ public class VPNConfigScraperFrame extends JFrame {
         mainPanel.add(fetchButton, gbc);
 
         add(mainPanel);
+
+        // Add component listener to handle resizing
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+                    JScrollPane scrollPane = (JScrollPane) tabbedPane.getComponentAt(i);
+                    JPanel panel = (JPanel) scrollPane.getViewport().getView();
+                    panel.revalidate();
+                    panel.repaint();
+                }
+            }
+        });
     }
 
     private JPanel createProtocolPanel(String protocol) {
