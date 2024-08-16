@@ -173,22 +173,24 @@ public class VPNConfigScraperFrame extends JFrame {
     }
 
     private void addConfigToPanel(String config, JPanel panel, int index) {
-        JPanel configContainer = new JPanel();
-        configContainer.setLayout(new BorderLayout());
+        JPanel configContainer = new JPanel(new BorderLayout());
+
+        JButton configButton = new JButton(index + ". " + config);
+        configButton.setPreferredSize(new Dimension(600, 30));
+        configButton.setMinimumSize(new Dimension(600, 30));  // Prevent shrinking below this size
+        configButton.setHorizontalAlignment(SwingConstants.LEFT);
 
         JButton copyButton = new JButton("Copy");
         copyButton.setPreferredSize(new Dimension(100, 30));
         copyButton.setMinimumSize(new Dimension(100, 30));  // Prevent shrinking below this size
-        JTextField configField = new JTextField(index + ". " + config);
-        configField.setEditable(false);
 
         copyButton.addActionListener(e -> {
             copyToClipboard(config);
             JOptionPane.showMessageDialog(this, "Config copied to clipboard!", "Success", JOptionPane.INFORMATION_MESSAGE);
         });
 
+        configContainer.add(configButton, BorderLayout.CENTER);
         configContainer.add(copyButton, BorderLayout.WEST);
-        configContainer.add(configField, BorderLayout.CENTER);
 
         panel.add(configContainer);
     }
