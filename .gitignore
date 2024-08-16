@@ -1,5 +1,8 @@
 # Compiled class file
 *.class
+*.gitignore
+*.gitattributes
+
 
 # Log file
 *.log
